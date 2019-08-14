@@ -3,7 +3,7 @@
     <modules>
         <Raveinfosys_Deleteorder>
             <active>true</active>
-            <codePool>local</codePool>
+            <codePool>community</codePool>
         </Raveinfosys_Deleteorder>
     </modules>
 </config> 
