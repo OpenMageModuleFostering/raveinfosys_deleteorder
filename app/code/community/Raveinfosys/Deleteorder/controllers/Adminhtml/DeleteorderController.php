@@ -1,6 +1,6 @@
 <?php
 
-class Raveinfosys_Deleteorder_Adminhtml_DeleteorderController extends Mage_Adminhtml_Controller_action
+class Raveinfosys_Deleteorder_Adminhtml_DeleteorderController extends Mage_Adminhtml_Controller_Action
 {
 
 	protected function _initAction() {
@@ -34,13 +34,13 @@ class Raveinfosys_Deleteorder_Adminhtml_DeleteorderController extends Mage_Admin
 			try {
      		    $order->delete()->save();
 				Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('adminhtml')->__('Order was successfully deleted'));
-				$this->_redirectUrl(Mage::getBaseUrl().'admin/sales_order/index');
+				$this->_redirectUrl(Mage::helper('adminhtml')->getUrl('adminhtml/sales_order/index'));
 			} catch (Exception $e) {
 				Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
 				$this->_redirect('*/*/edit', array('id' => $this->getRequest()->getParam('order_ids')));
 			}
 		}
-		$this->_redirectUrl(Mage::getBaseUrl().'admin/sales_order/index');
+		$this->_redirectUrl(Mage::helper('adminhtml')->getUrl('adminhtml/sales_order/index'));
 	}
     public function massDeleteAction() {
         $deleteorderIds = $this->getRequest()->getParam('order_ids');
@@ -60,6 +60,6 @@ class Raveinfosys_Deleteorder_Adminhtml_DeleteorderController extends Mage_Admin
                 Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
             }
         }
-		$this->_redirectUrl(Mage::getBaseUrl().'admin/sales_order/index');
+		$this->_redirectUrl(Mage::helper('adminhtml')->getUrl('adminhtml/sales_order/index'));
     }
 }
