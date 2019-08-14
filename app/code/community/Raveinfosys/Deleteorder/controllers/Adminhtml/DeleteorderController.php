@@ -32,9 +32,11 @@ class Raveinfosys_Deleteorder_Adminhtml_DeleteorderController extends Mage_Admin
 	public function deleteAction() {
 		if($order = $this->_initOrder()) {
 			try {
-     		    $order->delete()->save();
-				Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('adminhtml')->__('Order was successfully deleted'));
-				$this->_redirectUrl(Mage::helper('adminhtml')->getUrl('adminhtml/sales_order/index'));
+     		    $order->delete();
+				if($this->_remove($this->getRequest()->getParam('order_id'))){
+					Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('adminhtml')->__('Order was successfully deleted'));
+					$this->_redirectUrl(Mage::helper('adminhtml')->getUrl('adminhtml/sales_order/index'));
+				}
 			} catch (Exception $e) {
 				Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
 				$this->_redirect('*/*/edit', array('id' => $this->getRequest()->getParam('order_ids')));
@@ -49,7 +51,8 @@ class Raveinfosys_Deleteorder_Adminhtml_DeleteorderController extends Mage_Admin
         } else {
             try {
                 foreach ($deleteorderIds as $deleteorderId) {
-					Mage::getModel('sales/order')->load($deleteorderId)->delete();
+					Mage::getModel('sales/order')->load($deleteorderId)->delete()->unsetAll();
+					$this->_remove($deleteorderId);
                 }
                 Mage::getSingleton('adminhtml/session')->addSuccess(
                     Mage::helper('adminhtml')->__(
@@ -62,4 +65,24 @@ class Raveinfosys_Deleteorder_Adminhtml_DeleteorderController extends Mage_Admin
         }
 		$this->_redirectUrl(Mage::helper('adminhtml')->getUrl('adminhtml/sales_order/index'));
     }
+	
+	public function _remove($order_id){
+		$resource = Mage::getSingleton('core/resource');
+        $delete = $resource->getConnection('core_read');
+        $order_table = $resource->getTableName('sales_flat_order_grid');
+        $invoice_table = $resource->getTableName('sales_flat_invoice_grid');
+        $shipment_table = $resource->getTableName('sales_flat_shipment_grid');
+        $creditmemo_table = $resource->getTableName('sales_flat_creditmemo_grid');
+		$sql = "DELETE FROM  " . $order_table . " WHERE entity_id = " . $order_id . ";";
+        $delete->query($sql);
+		$sql = "DELETE FROM  " . $invoice_table . " WHERE order_id = " . $order_id . ";";
+        $delete->query($sql);
+		$sql = "DELETE FROM  " . $shipment_table . " WHERE order_id = " . $order_id . ";";
+        $delete->query($sql);
+		$sql = "DELETE FROM  " . $creditmemo_table . " WHERE order_id = " . $order_id . ";";
+        $delete->query($sql);
+		
+		return true;
+	}
+	
 }
