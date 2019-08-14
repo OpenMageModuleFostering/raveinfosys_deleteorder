@@ -1,0 +1,16 @@
+{
+    "name": "OpenMageModuleFostering/Raveinfosys_Deleteorder",
+    "type": "magento-module",
+    "license": "Open-Software-License-(OSL)",
+    "homepage": "",
+    "description": "This extension allows you to delete orders. ",
+    "authors": [
+    {
+        "name": "Rave Infosys",
+        "email": "lpext@raveinfosys.com"
+    }
+],
+    "suggest": {
+        "magento-hackathon/magento-composer-installer": "*"
+    }
+}
